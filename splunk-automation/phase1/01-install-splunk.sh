@@ -5,8 +5,8 @@ set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 LOG_FILE="$SCRIPT_DIR/../logs/phase1-install.log"
-SPLUNK_VERSION="9.1.0"
-SPLUNK_BUILD="1c86ca0bacc3"
+SPLUNK_VERSION="8.2.6"
+SPLUNK_BUILD="a6fe1ee8894b"
 
 # Logging function
 log() {
