@@ -25,7 +25,7 @@ setup-config:
 # Set remote URL
 setup-remote:
 	@echo "Setting remote URL..."
-	@git remote set-url origin git@github-Aravind-Murugaiyan-ML:Aravind-Murugaiyan-ML/mak-qc-self-learn.git
+	@git remote set-url origin git@github-Aravind-Murugaiyan-ML:Aravind-Murugaiyan-ML/splunk-infra.git
 	@echo "Remote URL updated"
 
 # Test SSH connection
