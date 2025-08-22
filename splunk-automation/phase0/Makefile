@@ -25,6 +25,13 @@ create-user: ## Create splunk user with bash shell and sudo privileges
 	@sudo useradd -m -s /bin/bash $(SPLUNK_USER) || true
 	@sudo usermod -aG sudo $(SPLUNK_USER) || { echo "[$(shell date '+%Y-%m-%d %H:%M:%S')] ERROR: Failed to configure splunk user"; exit 1; }
 
+# Add splunk user to adm group
+ERR_MSG := ERROR: Failed to add splunk user to adm group
+add-splunk-user-to-adm-group: ## Add splunk user to adm group for log file access
+	@$(call log,Adding splunk user to adm group...)
+	@sudo usermod -a -G adm $(SPLUNK_USER) || { echo "$(ERR_MSG)"; exit 1; }
+	@echo "[$(shell date '+%Y-%m-%d %H:%M:%S')] Splunk user added to adm group"
+
 # Set up directory structure
 setup-dirs: ## Set up directories for Splunk and scripts
 	@echo "[$(shell date '+%Y-%m-%d %H:%M:%S')] Setting up directory structure..."
@@ -47,5 +54,5 @@ help: ## Display help information
 		printf "  $(GREEN)%-25s$(NC) %s\n" "$$target" "$$desc"; \
 	done
 	@echo ""
-	@echo "execution order: update-system->install-packages->create-user->setup-dirs->configure-systemd"
+	@echo "execution order: update-system->install-packages->create-user->add-splunk-user-to-adm-group->setup-dirs->configure-systemd"
 	@echo ""

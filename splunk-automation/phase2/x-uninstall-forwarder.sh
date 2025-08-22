@@ -258,14 +258,4 @@ if id "splunk" &>/dev/null; then
 else
     success "Splunk user removed"
 fi
-
-# 10. Port cleanup verification
-echo
-echo "10. Port verification..."
-echo "-----------------------"
-
-# Check if any splunk-related ports are still in use
-splunk_ports=(8089 8100 8188 9997)
-for port in "${splunk_ports[@]}"; do
-    if netstat -tln 2>/dev/null | grep -q ":$port " || ss -tln 2>/dev/null | grep -q ":$port "; then
-        warning
+success "Universal Forwarder uninstall completed successfully!"

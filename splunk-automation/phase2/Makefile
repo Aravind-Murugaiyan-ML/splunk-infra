@@ -7,26 +7,12 @@ LOG_FILE = $(shell pwd)/../logs/phase2-forwarder.log
 .PHONY: all configure-forwarder restart-forwarder verify-monitor test-message verify-search help
 
 # Default target: Run all configuration and verification steps
-all: configure-forwarder restart-forwarder verify-monitor test-message verify-search
+all: verify-monitor test-message verify-search
 
 # Logging function
 define log
 	echo "[$(shell date '+%Y-%m-%d %H:%M:%S')] $1" | tee -a $(LOG_FILE)
 endef
-
-# Add splunk user to adm group
-configure-forwarder: ## Add splunk user to adm group for log file access
-	@$(call log,Adding splunk user to adm group...)
-	@sudo usermod -a -G adm $(SPLUNK_USER) || { $(call log,ERROR: Failed to add splunk user to adm group); exit 1; }
-	@$(call log,✓ Splunk user added to adm group)
-
-# Restart Universal Forwarder
-restart-forwarder: ## Restart Universal Forwarder to apply permissions and inputs
-	@$(call log,Restarting Universal Forwarder...)
-	@sudo -u $(SPLUNK_USER) $(SPLUNK_FORWARDER_HOME)/bin/splunk restart || { $(call log,ERROR: Failed to restart Universal Forwarder); exit 1; }
-	@$(call log,Sleeping for 30 seconds to allow restart...)
-	@sleep 30
-	@$(call log,✓ Universal Forwarder restarted)
 
 # Verify monitor input
 verify-monitor: ## Verify monitor input configuration
@@ -55,6 +41,12 @@ verify-search: ## Search for test message in Splunk Enterprise
 		while read -r line; do echo "[$(shell date '+%Y-%m-%d %H:%M:%S')]   Search Output: $$line" | tee -a $(LOG_FILE); done < /tmp/search_output.txt; \
 		exit 1; \
 	fi
+# List information about the deployment clients connected to the Splunk Deployment Server
+list-deployment-clients: ## List deployment clients connected to the deployment server
+	@$(call log,Listing deployment clients connected to the deployment server...)
+	@sudo -u $(SPLUNK_USER) $(SPLUNK_HOME)/bin/splunk list deploy-clients -auth admin:changeme > /tmp/deploy_clients.txt 2>&1 || { $(call log,ERROR: Failed to list deployment clients); cat /tmp/deploy_clients.txt; exit 1; }
+	@$(call log,✓ Deployment clients listed successfully)
+	@while read -r line; do echo "[$(shell date '+%Y-%m-%d %H:%M:%S')]   Client: $$line" | tee -a $(LOG_FILE); done < /tmp/deploy_clients.txt
 
 # Display help information
 help: ## Display help information

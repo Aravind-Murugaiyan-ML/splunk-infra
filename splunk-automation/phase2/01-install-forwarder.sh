@@ -138,6 +138,16 @@ sudo -u splunk tee /opt/splunkforwarder/etc/system/local/inputs.conf > /dev/null
 
 [default]
 host = $ACTUAL_HOSTNAME
+
+[monitor:///var/log/syslog]
+disabled = false
+index = main
+sourcetype = syslog
+
+[monitor:///var/log/auth.log]
+disabled = false
+index = main
+sourcetype = linux_secure
 EOF
 
 # Create user-seed.conf
